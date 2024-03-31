@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, func, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from database import Base
+from database.database import Base
 
 class User(Base):
     __tablename__ = 'user'
@@ -76,9 +76,9 @@ class Tool(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(256))
-    descriprion = Column(String(1024))
+    description = Column(String(512))
     cityid = Column(Integer, ForeignKey('city.id'))
-    userid = Column(Integer, ForeignKey('city.id'))
+    userid = Column(Integer, ForeignKey('user.id'))
 
     measurement_tool = relationship("Measurement", back_populates='tool_measurement')
     city_tool = relationship("City", back_populates='tool_city')

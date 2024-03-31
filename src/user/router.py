@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.database import get_session
 from database.models import User
-from user.schemas import UserCreate, UserInOut
+from user.schemas import UserCreate, UserInOut, UserBase
 from user.crud import CRUDUser
 from user.dependency import get_user
 from user.auth import verify_token, create_access_token, verify_password, hash_password
@@ -55,13 +55,13 @@ async def read_users_me(user: User = Depends(get_current_user)):
     return user
 
 
-@router.get("/", response_model=list[UserInOut])
-async def read_users(session: AsyncSession = Depends(get_session)):
+@router.get("/", response_model=list[UserBase])
+async def read_users(session: AsyncSession = Depends(get_session), user: User = Depends(get_current_user)):
     return await CRUDUser.get_all(session)
 
 
 @router.get("/{user_id}", response_model=UserInOut)
-async def read_user(user: User = Depends(get_user)):
+async def read_user(user: User = Depends(get_current_user)):
     return user
 
 @router.post("/", response_model=UserInOut)
@@ -83,7 +83,7 @@ async def update_user(
 
 @router.delete("/{user_id}")
 async def delete_user(
-    user: User = Depends(get_user), session: AsyncSession = Depends(get_session)
+    user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)
 ):
     # удалить все city, tool & measurements по этому пользователю
     measurements = await CRUDMeasurement.get_all_by_user(session, user.id)

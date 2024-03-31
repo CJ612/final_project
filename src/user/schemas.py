@@ -9,11 +9,11 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    
 
 
 class UserInOut(UserBase):
     id: int
 
     class Config:
-        # from_attributes = True
-        orm_mode = True
+        from_attributes = True
