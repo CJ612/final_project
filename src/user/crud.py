@@ -45,11 +45,8 @@ class CRUDUser:
 
     @staticmethod
     async def get_user_by_username(session: AsyncSession, username: str):
-        user = select(User).filter(User.username == username)
-        user = await session.execute(user)
-        user = user.scalar_one_or_none()
-        if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-            )
+        query = select(User).filter(User.username == username)
+        result = await session.execute(query)
+        user = result.scalar_one_or_none()
+    
         return user

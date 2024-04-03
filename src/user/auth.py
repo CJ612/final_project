@@ -32,3 +32,13 @@ def verify_token(token: str, credentials_exception):
         return username
     except JWTError:
         raise credentials_exception
+    
+def verify_token_not_exception(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_name: int = payload.get("sub")
+        if user_name is None:
+            return
+        return user_name
+    except JWTError:
+        return

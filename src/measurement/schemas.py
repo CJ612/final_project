@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import date
+from typing import Optional
 
 class MeasurementBase(BaseModel):
     userid: int
@@ -16,3 +17,9 @@ class MeasurementSelect(MeasurementBase):
 
     class Config:
         from_attributes = True
+
+class MeasurementUpdate(MeasurementBase):
+
+    temperature: Optional[int]
+    humidity: Optional[int]
+    windspeed: Optional[int]

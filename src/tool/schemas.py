@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class ToolBase(BaseModel):
     name: str
@@ -11,3 +12,7 @@ class ToolSelect(ToolBase):
 
     class Config:
         from_attributes = True
+
+class ToolUpdate(ToolBase):
+    name: Optional[str]
+    description: Optional[str|None]
