@@ -1,0 +1,16 @@
+.container {
+    margin-top: 50px;
+}
+.btn-primary {
+    background-color: lightseagreen;
+    border-color: darkgreen;
+}
+.card {
+    border: 2px solid lightseagreen; 
+    padding: 20px;
+}
+.loginregister {
+    text-align: center;
+    border: 2px solid lightseagreen; 
+    border-style: dotted;
+}

@@ -1,0 +1,52 @@
+{%extends "/base.html" %}
+
+{% block title %}Report{% endblock %}
+
+{% block style %}<link rel="stylesheet" href="/css/report.css" />{% endblock %}
+{% block scriptheader %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>{% endblock %}
+{% block content %}
+{% include 'elements/nav.html' %}
+
+  <canvas id="myChart" width="400" height="200"></canvas>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    
+    const data = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+      indicator1: [65, 59, 80, 81, 56, 55],
+      indicator2: [28, 48, 40, 19, 86, 27]
+    };
+
+    
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: 'Indicator 1',
+          data: data.indicator1,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }, {
+          label: 'Indicator 2',
+          data: data.indicator2,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  </script>
+{% endblock %}

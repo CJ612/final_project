@@ -1,0 +1,62 @@
+{%extends "/base.html" %}
+
+{% block title %}Tools{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="/css/tools.css" />
+{% endblock %}
+
+{% block content %}
+{% include 'elements/nav.html' %}
+<div class="container">
+    <h1 class="mt-5"><strong>Tools:</strong></h1>
+    <div class="col mt-1">   
+            <table id="tooldata" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tool in data %}
+                    <tr>
+                        <td>{{tool["name"]}}</td>
+                        <td>{{tool["description"]}}</td>
+                        <td>
+                            <button type="submit" class="btn">Update</button>
+                            <button type="submit" class="btn">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>         
+   
+    <div class="col-md-10">
+        <h2>Enter your new tool:</h2>
+        <form action="/tools" method="post">
+            <div class="form-group">
+                <label for="tool">Tool:</label>
+                <input type="text" class="form-control" id="tool" name="name" placeholder="Enter tool name">
+            </div>
+            <div class="form-group">
+                <label for="tooldescription">Tool description:</label>
+                <textarea class="form-control" id="tooldescription" name="description" placeholder="Enter tool description" rows="5"></textarea>
+              </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#tooldata').DataTable();
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+{% endblock %}

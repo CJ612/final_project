@@ -27,8 +27,16 @@ class CRUDWeatherDescription:
         weather_description = select(WeatherDescription).filter(WeatherDescription.skydescription == weather_description_name)
         weather_description = await session.execute(weather_description)
         weather_description = weather_description.scalar_one_or_none()
-        if weather_description is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Weather description not found"
-            )
+        # if weather_description is None:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_404_NOT_FOUND, detail="Weather description not found"
+        #     )
+        return weather_description
+    
+    @staticmethod
+    async def get_all_weather_desctiptions(session: AsyncSession):
+        weather_description = select(WeatherDescription)
+        weather_description = await session.execute(weather_description)
+        weather_description = weather_description.scalars().all()
+        
         return weather_description

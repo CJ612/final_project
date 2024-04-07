@@ -4,7 +4,7 @@ from typing import Optional
 class ToolBase(BaseModel):
     name: str
     description: str|None
-    cityid: int
+    cityid: int|None
     userid: int
 
 class ToolSelect(ToolBase):

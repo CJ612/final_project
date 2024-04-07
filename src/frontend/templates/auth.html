@@ -1,106 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: white;
-            background-image: url("img/backgrnd3.jpg") ;
-            background-size: cover; 
-            background-repeat: no-repeat; 
-            background-position: top;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        .btn-primary {
-            background-color: lightseagreen;
-            border-color: darkgreen;
-        }
-        .card {
-            border: 2px solid lightseagreen; 
-            padding: 20px;
-        }
-        .footer {
-            background-color: lightseagreen;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-            font-family: Arial, sans-serif;
-            position: fixed; 
-            bottom: 0;
-            width: 100%;
-        }
-        
-        footer a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 10px;
-            margin-top: 10px;
-        }
-        
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <img src="/img/logo.png" width="50" alt="Logo" >                        
-                        <h3 style="text-align: center;"> Sign In</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="formAuthentication" class="mb-3" action="user/auth" method="post">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
-                            </div>                            
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                        </form>                        
-                    </div>
-                    {% if not_auth %}
-                    <div id="alert" class="alert alert-danger d-none" role="alert">
-                        Incorrect username or password. Please try again.
-                    </div>
-                    {% endif %}
+{%extends "/base.html" %}
+
+{% block title %}Sign In{% endblock %}
+{% block style %}<link rel="stylesheet" href="/css/register_auth.css" />{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <a href="/"><img src="/img/logo.png" width="50" alt="Logo" ></a>                        
+                    <h3 style="text-align: center;"> Sign In</h3>
                 </div>
+                <div class="card-body">
+                    <form id="formAuthentication" class="mb-3" action="user/auth" method="post">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+                        </div>                            
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <p class="loginregister">
+                            <span>Don't have an account?</span>
+                            <a href="/register">
+                              <span>Sign up</span>
+                            </a>
+                        </p>
+                    </form>                        
+                </div>
+                {% if not_auth %}
+                <div id="alert" class="alert alert-danger d-none" role="alert">
+                    Incorrect username or password. Please try again.
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
-    <footer class="footer">
-        <a href="#">Privacy and Cookies</a>
-        <a href="#">Content Policy</a>
-        <a href="#">Terms of Use</a>
-        <a href="#">Feedback</a>  
-    </footer>
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#loginForm').submit(function(e) {
-                e.preventDefault();
-                var username = $('#username').val();
-                var password = $('#password').val();
-                // You can add your authentication logic here
-                // For demonstration purpose, let's assume the authentication fails
-                $('#alert').removeClass('d-none');
-            });
-        });
-    </script>
-
-</body>
-</html>
+</div>
+{% endblock %}

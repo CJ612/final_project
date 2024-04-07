@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Default Title{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+    {% block style %}{% endblock %}
+    {% block scriptheader %}{% endblock %}
+    <style>
+        body {
+            background-color: white;
+            background-image: url("img/backgrnd3.jpg") ;
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-position: top; 
+        }
+        .footer {
+            background-color: lightseagreen;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            position: fixed; 
+            bottom: 0;
+            width: 100%;
+        }
+        
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            margin-top: 10px;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <footer class="footer">
+        <a href="#">Privacy and Cookies</a>
+        <a href="#">Content Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Feedback</a>  
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block script %}{% endblock %}
+</body>
+</html>

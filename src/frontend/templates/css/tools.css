@@ -1,0 +1,20 @@
+.nav-item {
+    margin-inline-end: 15px; 
+}
+.btn-primary {
+    padding: 10px 20px;
+    background-color: lightseagreen;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    border-color: darkgreen;
+}
+h1 {
+    text-align: center;
+}
+.col-md-10 {
+    border: 2px solid lightseagreen;  
+    padding: 20px; 
+    margin-top: 50px; 
+}

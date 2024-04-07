@@ -91,10 +91,10 @@ async def get_user(
     return user
 
 
-@router.get("/", response_model=list[UserInOut])
-async def get_users(session: AsyncSession = Depends(get_session)):
-    users = await CRUDUser.get_all(session)
-    return users
+# @router.get("/", response_model=list[UserInOut])
+# async def get_users(session: AsyncSession = Depends(get_session)):
+#     users = await CRUDUser.get_all(session)
+#     return users
 
 
 @router.put("/{user_id}", response_model=UserUpdate)
@@ -102,6 +102,7 @@ async def update_user(
     user_data: UserCreate,
     user: User = Depends(get_user_by_id),
     session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     if user_data.password:
         user_data.password = hash_password(user_data.password)
@@ -109,69 +110,6 @@ async def update_user(
     if updated_user is None:
         raise exception_unique_field
     return updated_user
-
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/token")
-
-# async def get_current_user(
-#     token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)
-# ):
-#     credentials_exception = HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Could not validate credentials",
-#         headers={"WWW-Authenticate": "Bearer"},
-#     )
-#     user_name = verify_token(token, credentials_exception)
-#     user = await CRUDUser.get_user_by_username(session, user_name)
-#     if user is None:
-#         raise credentials_exception
-#     return user
-
-# @router.post("/token")
-# async def login_for_access_token(
-#     form_data: OAuth2PasswordRequestForm = Depends(),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     user = await CRUDUser.get_user_by_username(session, form_data.username)
-#     if not user or not verify_password(form_data.password, user.password):
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     access_token = create_access_token(data={"sub": user.username})
-#     return {"access_token": access_token, "token_type": "bearer"}
-
-
-# @router.post("/me", response_model=UserInOut)
-# async def read_users_me(user: User = Depends(get_current_user)):
-#     return user
-
-
-# @router.get("/", response_model=list[UserBase])
-# async def read_users(session: AsyncSession = Depends(get_session), user: User = Depends(get_current_user)):
-#     return await CRUDUser.get_all(session)
-
-
-# @router.get("/{user_id}", response_model=UserInOut)
-# async def read_user(user: User = Depends(get_current_user)):
-#     return user
-
-# @router.post("/", response_model=UserInOut)
-# async def create_user(user: UserCreate, session: AsyncSession = Depends(get_session)):
-#     user.password = hash_password(user.password)
-#     user = await CRUDUser.create(session, user.dict())
-#     return user
-
-
-# @router.put("/{user_id}", response_model=UserInOut)
-# async def update_user(
-#     user_create: UserCreate,
-#     user: User = Depends(get_current_user),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     user = await CRUDUser.update(session, user, user_create.dict())
-#     return user
-
 
 @router.delete("/{user_id}")
 async def delete_user(

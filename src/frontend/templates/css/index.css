@@ -1,0 +1,44 @@
+.carousel-item img {
+    width: 100%;
+    height: auto;
+}
+blockquote {
+    font-size: 70px; 
+    font-style: italic;
+    line-height: 1.5;
+    position: relative;
+    color: lightblue; 
+}
+blockquote:before {
+    content: open-quote;
+    font-size: 3em; 
+    color: lightseagreen; 
+    position: absolute;
+    top: -0.3em;
+    left: -0.7em;
+}
+blockquote:after {
+    content: close-quote;
+    font-size: 3em; 
+    color: lightseagreen; 
+    position: absolute;
+    bottom: -0.5em;
+    right: -0.7em;
+}
+.w-100 {
+    display: block;
+    margin: auto;
+}
+.abe {
+    background-color: #fff;
+    color: black;
+}
+.nav-item {
+    margin-inline-end: 15px; 
+}
+.greeting {
+    color: black;
+    font-size: large;
+    margin-left: 10px;
+    font-weight: 600;
+}

@@ -1,0 +1,89 @@
+{%extends "/base.html" %}
+
+{% block title %}Weather Input{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="/css/winput.css">
+{% endblock %}
+
+{% block content %}
+{% include 'elements/nav.html' %}
+<div class="container">
+    <h1 class="mt-5"><strong>Collecting data from a weather site and entering actual measurement data:</strong></h1>
+    <h2>Google Weather:</h2>
+    <div class="col mt-2">   
+            <table id="gdata" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th>Weather description</th>
+                        <th>Temperature, &deg;C</th>
+                        <th>Humidity, %</th>
+                        <th>Wind speed, km/h</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Text</td>
+                        <td>Text</td>
+                        <td>Text</td>
+                        <td>Text</td>
+                        <td>Text</td>
+                        <td>Text</td>
+                        <td>Text</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button type="submit" class="btn btn-primary">Get data</button>
+        </div>         
+   
+    <div class="col-md-6">
+        <h2>Actual measurements:</h2>
+        <form>
+            <div class="mb-3">
+                <label for="tool" class="form-label">Tool</label>
+                <select class="form-control select2" id="tool" name="tool" required data-allow-clear="true">
+                  <option value="">Select tool</option>
+                  {% for tool in data['tools'] %}
+                  <option value="{{tool}}">{{tool.name}}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="weatherdescription" class="form-label">Weather description:</label>
+                <select class="form-control select2" id="weatherdescription" name="weatherdescription" required data-allow-clear="true">
+                  <option value="">Select weather description</option>
+                  {% for weatherdescription in data["weatherdescriptions"] %}
+                  <option value="{{weatherdescription}}">{{weatherdescription.skydescription}}</option>
+                  {% endfor %}
+                </select>
+            </div> 
+            <div class="form-group">
+                <label for="temperature">Temperature, &deg;C:</label>
+                <input type="number" class="form-control" id="temperature" name="temperature" placeholder="Enter temperature" min="-999" step="any">
+            </div>
+            <div class="form-group">
+                <label for="humidity">Humidity, %:</label>
+                <input type="number" class="form-control" id="humidity" name="humidity" placeholder="Enter humidity">
+            </div>
+            <div class="form-group">
+                <label for="windspeed">Wind speed, km/h:</label>
+                <input type="number" class="form-control" id="windspeed" name="windspeed" placeholder="Enter wind speed">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#gdata').DataTable();
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+{% endblock %}
