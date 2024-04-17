@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,9 +15,9 @@ class CRUDGoogleWeather:
         return google_weather
     
     @staticmethod
-    async def get_all_by_city_id_date(session: AsyncSession, city_id: int, date: date):
+    async def get_all_by_city_id_date(session: AsyncSession, city_id: int, date: datetime):
         google_weather = await session.execute(select(GoogleWeather).filter(GoogleWeather.cityid == city_id, GoogleWeather.date == date))
-        google_weather = google_weather.scalars().all()
+        google_weather = google_weather.scalar_one_or_none()
         return google_weather
 
     @staticmethod
@@ -27,3 +27,11 @@ class CRUDGoogleWeather:
         await session.commit()
         await session.refresh(google_weather)
         return google_weather
+        
+    @staticmethod
+    async def update(session: AsyncSession, googleweather: GoogleWeather, google_weather_data: dict):
+        for key, value in google_weather_data.items():
+            setattr(googleweather, key, value)
+        await session.commit()
+        await session.refresh(googleweather)
+        return googleweather

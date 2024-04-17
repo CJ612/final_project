@@ -29,13 +29,13 @@
                               <span>Sign up</span>
                             </a>
                         </p>
+                        {% if request.session['message'] and not_auth %}
+                        <div class="alert alert-warning" role="alert">
+                            {{ request.session.pop("message") }}
+                        </div>
+                        {% endif %}
                     </form>                        
                 </div>
-                {% if not_auth %}
-                <div id="alert" class="alert alert-danger d-none" role="alert">
-                    Incorrect username or password. Please try again.
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>

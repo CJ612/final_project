@@ -49,18 +49,20 @@ class CRUDTool:
         tool = select(Tool).filter(Tool.name == toolname, Tool.userid == user_id)
         tool = await session.execute(tool)
         tool = tool.scalar_one_or_none()
-        # if tool is None:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_204_NO_CONTENT, detail="Tool not found"
-        #     )
+        
         return tool
     
     @staticmethod
     async def get_all_by_user_id(session: AsyncSession, user_id: int):
         tools = await session.execute(select(Tool).filter(Tool.userid == user_id))
         tools = tools.scalars().all()
-        # if tools is None:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_204_NO_CONTENT, detail="Tools not found"
-        #     )
+        
         return tools
+    
+    @staticmethod
+    async def get_tool_by_toolid_and_userid(session: AsyncSession, tool_id: str, user_id: int):
+        tool = select(Tool).filter(Tool.id == tool_id, Tool.userid == user_id)
+        tool = await session.execute(tool)
+        tool = tool.scalar_one_or_none()
+        
+        return tool

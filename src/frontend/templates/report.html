@@ -2,24 +2,154 @@
 
 {% block title %}Report{% endblock %}
 
-{% block style %}<link rel="stylesheet" href="/css/report.css" />{% endblock %}
-{% block scriptheader %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" href="/css/report.css">
+<script defer>
+  document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+          delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "\\[", right: "\\]", display: true},
+              {left: "\\(", right: "\\)", display: false},
+              {left: "$", right: "$", display: false}
+          ]
+      });
+  });
+</script>
+{% endblock %}
+
+{% block scriptheader %} 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+{% endblock %}
+
 {% block content %}
 {% include 'elements/nav.html' %}
+<div class="container">
+  <h1 class="mt-5" style="text-align: center;"><strong>Weather statistics:</strong></h1>
+  <h2>Weather data:</h2>
+      <div class="col mt-2">   
+              <table id="statdata" class="display" style="width:100%;">
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>City</th>
+                          <th>Country</th>
+                          <th>Weather description</th>
+                          <th>Temperature, &deg;C</th>
+                          <th>Humidity, %</th>
+                          <th>Wind speed, km/h</th>
+                          <th>Actual weather description</th>
+                          <th>Actual temperature, &deg;C</th>
+                          <th>Actual humidity, %</th>
+                          <th>Actual wind speed, km/h</th>
+                          <th>Measurement tool</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in data %}
+                      <tr>
+                          <td>{{row['measurement_date']}}</td>
+                          <td>{{row['cities_city']}}</td>
+                          <td>{{row['cities_country']}}</td>
+                          <td>{{row['google_weather_description']}}</td>
+                          <td>{{row['google_weather_temperature']}}</td>
+                          <td>{{row['google_weather_humidity']}}</td>
+                          <td>{{row['google_weather_wind']}}</td>
+                          <td>{{row['measurement_description']}}</td>
+                          <td>{{row['measurement_temperature']}}</td>
+                          <td>{{row['measurement_humidity']}}</td>
+                          <td>{{row['measurement_wind']}}</td>
+                          <td>{{row['measurement_tool']}}</td>                       
+                      </tr>
+                    {% endfor %}  
+                  </tbody>
+              </table>
+      </div> 
+      <h2>Forecast accuracy data using Mean Absolute Percentage Error (MAPE):</h2>
+      <p>The MAPE formula is:</p>
+    
+      <span id="mapeFormula">\(\text{MAPE} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{Y_i - \hat{Y}_i}{Y_i} \right| \times 100\%\)</span>
 
-  <canvas id="myChart" width="400" height="200"></canvas>
+      <p>Where:</p>
+      <ul>
+          <li><span style="font-weight: bold;">\( Y_i \)</span>: Actual value</li>
+          <li><span style="font-weight: bold;">\( \hat{Y}_i \)</span>: Predicted value</li>
+          <li><span style="font-weight: bold;">\( n \)</span>: Number of observations</li>
+      </ul>
+
+      <div class="col mt-2">   
+              <table id="statdata2" class="display" style="width:100%;">
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>Temperature forecast accuracy, %</th>
+                          <th>Humidity forecast accuracy, %</th>
+                          <th>Wind speed forecast accuracy, %</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for value in accuracy %}
+                      <tr> 
+                          <td>{{value['date']}}</td>
+                          <td>{{value['atemperature']}}</td> 
+                          <td>{{value['ahumidity']}}</td> 
+                          <td>{{value['awind']}}</td>                       
+                      </tr>
+                    {% endfor %}  
+                  </tbody>
+              </table>
+      </div>       
+      <div class="col-md-10">
+          <h2 style="margin-bottom: 30px;">Statistical graphs:</h2>
+          <h4 style="text-decoration: underline;">Temperature:</h4>
+          <canvas id="myChart" width="1200" height="400"></canvas>
+          <h4 style="text-decoration: underline;">Humidity:</h4>
+          <canvas id="myChart2" width="1200" height="400"></canvas>
+          <h4 style="text-decoration: underline;">Wind speed:</h4>
+          <canvas id="myChart3" width="1200" height="400" style="margin-bottom: 90px;"></canvas>
+      </div>
+</div>
 
 {% endblock %}
 
 {% block script %}
 <script>
+  $(document).ready(function() {
+      $('#statdata').DataTable();
+      $('#statdata2').DataTable();
+  });
+</script>
+<script>
+    var jsArrayLabels = {{ json_data1 | tojson }};
+    var jsArrayTemp1 = {{ json_data2 | tojson }};
+    var jsArrayTemp2 = {{ json_data3 | tojson }};
+    var jsArrayHum1 = {{ json_data4 | tojson }};
+    var jsArrayHum2 = {{ json_data5 | tojson }};
+    var jsArrayWind1 = {{ json_data6 | tojson }};
+    var jsArrayWind2 = {{ json_data7 | tojson }};
     
     const data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-      indicator1: [65, 59, 80, 81, 56, 55],
-      indicator2: [28, 48, 40, 19, 86, 27]
+      labels: jsArrayLabels,
+      indicator1: jsArrayTemp1,
+      indicator2: jsArrayTemp2
     };
 
+    const data2 = {
+      labels: jsArrayLabels,
+      indicator1: jsArrayHum1,
+      indicator2: jsArrayHum2
+    };
+
+    const data3 = {
+      labels: jsArrayLabels,
+      indicator1: jsArrayWind1,
+      indicator2: jsArrayWind2
+    };
     
     const ctx = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx, {
@@ -27,14 +157,14 @@
       data: {
         labels: data.labels,
         datasets: [{
-          label: 'Indicator 1',
+          label: 'forecast',
           data: data.indicator1,
-          borderColor: 'rgba(255, 99, 132, 1)',
+          borderColor: 'rgba(32, 178, 170, 1)',
           borderWidth: 1
         }, {
-          label: 'Indicator 2',
+          label: 'actual',
           data: data.indicator2,
-          borderColor: 'rgba(54, 162, 235, 1)',
+          borderColor: 'rgba(255, 165, 0, 1)',
           borderWidth: 1
         }]
       },
@@ -48,5 +178,66 @@
         }
       }
     });
+
+    const ctx2 = document.getElementById('myChart2').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: data2.labels,
+        datasets: [{
+          label: 'forecast',
+          data: data2.indicator1,
+          borderColor: 'rgba(32, 178, 170, 1)',
+          borderWidth: 1
+        }, {
+          label: 'actual',
+          data: data2.indicator2,
+          borderColor: 'rgba(255, 165, 0, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+    const ctx3 = document.getElementById('myChart3').getContext('2d');
+    const myChart3 = new Chart(ctx3, {
+      type: 'line',
+      data: {
+        labels: data3.labels,
+        datasets: [{
+          label: 'forecast',
+          data: data3.indicator1,
+          borderColor: 'rgba(32, 178, 170, 1)',
+          borderWidth: 1
+        }, {
+          label: 'actual',
+          data: data3.indicator2,
+          borderColor: 'rgba(255, 165, 0, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
   </script>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>  
 {% endblock %}

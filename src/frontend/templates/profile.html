@@ -10,30 +10,47 @@
    
     <div class="col-md-6">
         <h2>Change data:</h2>
-        <form>
+        <form action="/user/updateuser" method="post">
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter new name">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="text" class="form-control" id="name" name="name" placeholder="{{user.name}} • Enter new name">
             </div>
             <div class="form-group">
                 <label for="age">Age:</label>
-                <input type="text" class="form-control" id="age" name="age" placeholder="Enter new age">
+                <input type="text" class="form-control" id="age" name="age" placeholder="{{user.age}} • Enter new age">
             </div>
             <div class="form-group">
                 <label for="password">New password:</label>
-                <input type="text" class="form-control" id="password" name="password" placeholder="Enter new password">
+                <input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="Enter new password">
             </div>
             <div class="form-group">
                 <label for="email">E-mail:</label>
-                <input type="text" class="form-control" id="humidity" name="humidity" placeholder="Enter new e-mail">
+                <input type="text" class="form-control" id="email" name="email" placeholder="{{user.email}} • Enter new e-mail">
             </div>
             <div class="form-group">
-                <label for="oldpassword"><strong>Old password:</strong></label>
-                <input type="text" class="form-control" id="oldpassword" name="oldpassword" placeholder="Enter old password">
+                <label for="oldpassword"><strong>Current password:</strong></label>
+                <input type="password" class="form-control" id="oldpassword" name="oldpassword" placeholder="Re-enter your current password to confirm changes">
             </div>
             <button type="submit" class="btn btn-primary">Save</button> 
+        </form>
+        <form action="/user/deleteuser?name={{user.name}}" method="post">
+            <br>
             <button type="submit" class="btn btn-primary">Delete user</button>
         </form>
+        <br>
+        {% if request.session['message'] %}
+            <div class="alert alert-info" role="alert">
+                {{ request.session.pop("message") }}
+            </div>
+        {% endif %} 
+        <br>
+        {% if request.session['wmessage'] %}
+            <div class="alert alert-warning" role="alert">
+                {{ request.session.pop("wmessage") }}
+            </div>
+        {% endif %} 
+               
     </div>
 </div>
 {% endblock %}

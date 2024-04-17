@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from fastapi.responses import RedirectResponse
+
 
 
 class RedirectException(HTTPException):
@@ -8,3 +8,7 @@ class RedirectException(HTTPException):
             status_code=status.HTTP_307_TEMPORARY_REDIRECT, detail="Temporary redirect"
         )
         self.headers = {"Location": url}
+
+class NotFoundException(HTTPException):
+    def __init__(self):
+        super().__init__(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")

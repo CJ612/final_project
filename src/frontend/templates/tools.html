@@ -17,22 +17,37 @@
                         <th>Tool</th>
                         <th>Description</th>
                         <th>Action</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tool in data %}
-                    <tr>
-                        <td>{{tool["name"]}}</td>
-                        <td>{{tool["description"]}}</td>
-                        <td>
-                            <button type="submit" class="btn">Update</button>
-                            <button type="submit" class="btn">Delete</button>
+                    <tr> 
+                        <form action="/updatetool" method="post">
+                            <td>
+                                <input type="text" name="name" value="{{tool['name']}}" class="form-control" required/>
+                                <input type="hidden" name="id" value="{{tool['id']}}" class="form-control"/>
+                            </td>
+                            <td><input type="text" name="description" value="{{tool['description']}}" class="form-control"/></td>
+                            <td>                        
+                                <button type="submit" class="btn">Update</button>
+                            </td>
+                        </form> 
+                        <td> 
+                            <form action="/deletetool?name={{tool['name']}}" method="post">
+                                <button type="submit" class="btn" >Delete</button>
+                            </form>
                         </td>
+                                               
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            
+            {% if request.session['message'] %}
+            <div class="alert alert-info" role="alert">
+                {{ request.session.pop("message") }}
+            </div>
+            {% endif %}
         </div>         
    
     <div class="col-md-10">
@@ -40,7 +55,7 @@
         <form action="/tools" method="post">
             <div class="form-group">
                 <label for="tool">Tool:</label>
-                <input type="text" class="form-control" id="tool" name="name" placeholder="Enter tool name">
+                <input type="text" class="form-control" id="tool" name="name" placeholder="Enter tool name" required>
             </div>
             <div class="form-group">
                 <label for="tooldescription">Tool description:</label>

@@ -1,3 +1,8 @@
 .nav-item {
     margin-inline-end: 15px; 
 }
+.math {
+    display: block;
+    font-size: 1.2em;
+    margin: 20px 0;
+}

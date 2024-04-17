@@ -11,53 +11,48 @@
 <div class="container">
     <h1 class="mt-5"><strong>Collecting data from a weather site and entering actual measurement data:</strong></h1>
     <h2>Google Weather:</h2>
-    <div class="col mt-2">   
-            <table id="gdata" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>City</th>
-                        <th>Country</th>
-                        <th>Weather description</th>
-                        <th>Temperature, &deg;C</th>
-                        <th>Humidity, %</th>
-                        <th>Wind speed, km/h</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Text</td>
-                        <td>Text</td>
-                        <td>Text</td>
-                        <td>Text</td>
-                        <td>Text</td>
-                        <td>Text</td>
-                        <td>Text</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <button type="submit" class="btn btn-primary">Get data</button>
+        <div class="col mt-2">   
+                <table id="gdata" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th>Weather description</th>
+                            <th>Temperature, &deg;C</th>
+                            <th>Humidity, %</th>
+                            <th>Wind speed, km/h</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{data['uppertable']['weather']['date']}}</td>
+                            <td>{{data['uppertable']['city']}}</td>
+                            <td>{{data['uppertable']['country']}}</td>
+                            <td>{{data['uppertable']['description']}}</td>
+                            <td>{{data['uppertable']['weather']['temperature']}}</td>
+                            <td>{{data['uppertable']['weather']['humidity']}}</td>
+                            <td>{{data['uppertable']['weather']['wind']}}</td>
+                        </tr>
+                    </tbody>
+                </table>
         </div>         
-   
     <div class="col-md-6">
         <h2>Actual measurements:</h2>
-        <form>
+        <form action="/weatherinput" method="post">
             <div class="mb-3">
                 <label for="tool" class="form-label">Tool</label>
-                <select class="form-control select2" id="tool" name="tool" required data-allow-clear="true">
-                  <option value="">Select tool</option>
+                <select class="form-control select2" id="tool" name="tool" required>
                   {% for tool in data['tools'] %}
-                  <option value="{{tool}}">{{tool.name}}</option>
+                  <option value="{{tool.id}}">{{tool.name}}</option>
                   {% endfor %}
                 </select>
             </div>
             <div class="mb-3">
                 <label for="weatherdescription" class="form-label">Weather description:</label>
-                <select class="form-control select2" id="weatherdescription" name="weatherdescription" required data-allow-clear="true">
-                  <option value="">Select weather description</option>
+                <select class="form-control select2" id="weatherdescription" name="weatherdescription" required> 
                   {% for weatherdescription in data["weatherdescriptions"] %}
-                  <option value="{{weatherdescription}}">{{weatherdescription.skydescription}}</option>
+                  <option value="{{weatherdescription.id}}">{{weatherdescription.skydescription}}</option>
                   {% endfor %}
                 </select>
             </div> 
@@ -73,8 +68,25 @@
                 <label for="windspeed">Wind speed, km/h:</label>
                 <input type="number" class="form-control" id="windspeed" name="windspeed" placeholder="Enter wind speed">
             </div>
+            <input type="hidden" name="cityid" value="{{data['uppertable']['weather']['cityid']}}">
+            <input type="hidden" name="date" value="{{data['uppertable']['weather']['date']}}">
+            <input type="hidden" name="gtemp" value="{{data['uppertable']['weather']['temperature']}}">
+            <input type="hidden" name="ghum" value="{{data['uppertable']['weather']['humidity']}}">
+            <input type="hidden" name="gwind" value="{{data['uppertable']['weather']['wind']}}">
+            <input type="hidden" name="gdesc" value="{{data['uppertable']['weather']['descriptionid']}}">
             <button type="submit" class="btn btn-primary">Save</button>
+            {% if request.session['message'] %}
+            <div class="alert alert-info" role="alert">
+                {{ request.session.pop("message") }}
+            </div>
+            {% endif %}
+            {% if request.session['wmessage'] %}
+            <div class="alert alert-warning" role="alert">
+                {{ request.session.pop("wmessage") }}
+            </div>
+            {% endif %}
         </form>
+
     </div>
 </div>
 {% endblock %}

@@ -1,7 +1,6 @@
-from fastapi import HTTPException, status
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from datetime import datetime
 from database.models import City
 
 
@@ -42,19 +41,20 @@ class CRUDCity:
         city = select(City).filter(City.name == cityname, City.country == country)
         city = await session.execute(city)
         city = city.scalar_one_or_none()
-        if city is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="City not found"
-            )
+        
         return city
     
     @staticmethod
-    async def get_city_by_user(session: AsyncSession, user_id: int):
+    async def get_city_by_user_and_date(session: AsyncSession, user_id: int, date: datetime):
+        city = select(City).filter(City.userid == user_id, City.date == date)
+        city = await session.execute(city)
+        city = city.scalar_one_or_none()
+        
+        return city
+    
+    @staticmethod
+    async def get_cities_by_user(session: AsyncSession, user_id: int):
         cities = select(City).filter(City.userid == user_id)
         cities = await session.execute(cities)
-        cities = cities.scalars().all()
-        if cities is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Cities not found"
-            )
+        cities = cities.scalars().all()        
         return cities

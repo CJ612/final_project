@@ -4,7 +4,7 @@ from typing import Optional
 
 class MeasurementBase(BaseModel):
     userid: int
-    toolid: int|None
+    toolid: int
     cityid: int
     descriptionid: int
     date: date
@@ -19,7 +19,8 @@ class MeasurementSelect(MeasurementBase):
         from_attributes = True
 
 class MeasurementUpdate(MeasurementBase):
-
+    toolid: Optional[int]
+    descriptionid: Optional[int]
     temperature: Optional[int]
     humidity: Optional[int]
     windspeed: Optional[int]

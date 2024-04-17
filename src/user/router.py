@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Form
+from fastapi import APIRouter, Depends, HTTPException, status, Form, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import RedirectResponse
@@ -8,10 +8,10 @@ from user.schemas import UserCreate, UserInOut, UserBase, UserUpdate
 from user.crud import CRUDUser
 from user.auth import create_access_token, verify_password, hash_password
 from .dependency import get_current_user, get_user_by_id
-from .exceptions import exception_unique_field
 from city.crud import CRUDCity
 from tool.crud import CRUDTool
 from measurement.crud import CRUDMeasurement
+from frontend.dependency import get_user_or_redirect
 
 
 router = APIRouter(
@@ -90,41 +90,60 @@ async def get_user(
 ):
     return user
 
-
-# @router.get("/", response_model=list[UserInOut])
-# async def get_users(session: AsyncSession = Depends(get_session)):
-#     users = await CRUDUser.get_all(session)
-#     return users
-
-
-@router.put("/{user_id}", response_model=UserUpdate)
+@router.post("/updateuser")
 async def update_user(
-    user_data: UserCreate,
-    user: User = Depends(get_user_by_id),
+    request: Request,
+    user: User = Depends(get_user_or_redirect),
     session: AsyncSession = Depends(get_session),
-    current_user: User = Depends(get_current_user),
-):
-    if user_data.password:
-        user_data.password = hash_password(user_data.password)
-    updated_user = await CRUDUser.update(session, user, user_data.model_dump())
-    if updated_user is None:
-        raise exception_unique_field
-    return updated_user
+    name: str|None = Form(None),
+    newpassword: str|None = Form(None),
+    age: int|None = Form(None),
+    email: str|None = Form(None),
+    oldpassword: str|None = Form(None),
 
-@router.delete("/{user_id}")
+):
+    if user:
+        user_data = {}
+        if oldpassword and verify_password(oldpassword, user.password):
+            if newpassword:
+                password = hash_password(newpassword)
+                user_data['password'] = password
+            else:
+                password = oldpassword
+
+            if name:
+                user_data['name'] = name
+            if age:
+                user_data['age'] = age
+            if email:
+                user_data['email'] = email
+
+            updated_user = await CRUDUser.update(session, user, user_data)
+            request.session["message"] = "The current user's data has been successfully updated."
+        else:
+            request.session["wmessage"] = "The password is incorrect or was not entered."
+        return RedirectResponse(url="/profile", status_code=status.HTTP_301_MOVED_PERMANENTLY)
+    
+
+@router.post("/deleteuser")
 async def delete_user(
-    user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)
+    user: User = Depends(get_user_or_redirect), 
+    session: AsyncSession = Depends(get_session)
 ):
     # удалить все city, tool & measurements по этому пользователю
-    measurements = await CRUDMeasurement.get_all_by_user(session, user.id)
+    deleted_data = await delete_users_data(user.id, session) 
+    if deleted_data is None:   
+        user = await CRUDUser.delete(session, user)
+    return RedirectResponse(url="/", status_code=status.HTTP_301_MOVED_PERMANENTLY)
+
+async def delete_users_data(user_id, session):
+    measurements = await CRUDMeasurement.get_measurements_by_user(session, user_id)
     for measurement in measurements:
         measurement = await CRUDMeasurement.delete(session, measurement)
-    tools = await CRUDTool.get_all_by_user_id(session, user.id)
+    tools = await CRUDTool.get_all_by_user_id(session, user_id)
     for tool in tools:
         tool = await CRUDTool.delete(session, tool)
-    cities = await CRUDCity.get_city_by_user(session, user.id)
+    cities = await CRUDCity.get_cities_by_user(session, user_id)
     for city in cities:
-        city = await CRUDTool.delete(session, city)
-    
-    user = await CRUDUser.delete(session, user)
-    return status.HTTP_204_NO_CONTENT
+        city = await CRUDCity.delete(session, city)
+    return

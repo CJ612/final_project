@@ -10,7 +10,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     
-class UserUpdate(UserBase):
+class UserUpdate(UserCreate):
     name: Optional[str]
     age: Optional[int]
     password: Optional[str]
