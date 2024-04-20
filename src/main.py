@@ -44,7 +44,10 @@ app.include_router(weather_description_router)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     if exc.status_code == 404:
         return RedirectResponse(url='/404')
-    return RedirectResponse(url='/othererror')
+    if exc.status_code == 500:
+        return RedirectResponse(url='/othererror')
+    else:
+        return RedirectResponse(url='/')
 
 
 # пересоздание таблиц БД
